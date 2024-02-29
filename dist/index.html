@@ -9,6 +9,61 @@
     <div class="header">
       <div class="logo">ToDo</div>
     </div>
+    <div class="container">
+      <div class="modal">
+        <div class="modalContent">
+          <div class="modalHeader">
+            <div class="modalTitle">Create a new...</div>
+            <div class="closeButton">X</div>
+          </div>
+          <div class="modalBody">
+            <div class="modalSideBar">
+              <div class="task">To Do</div>
+              <div class="project">Project</div>
+            </div>
+            <div class="modalInput">
+              <form>
+                <input type="text" placeholder="Title" class="title" required />
+                <textarea type="text" placeholder="Description" class="description" required></textarea>
+                <div class="dueDate">
+                  <div>Due date:</div>
+                  <input type="date" placeholder="DD/MM/YYYY" class="due" required />
+                </div>
+
+                <div class="priority">
+                  <p>Priority:</p>
+                  <div>
+                    <input type="hidden" />
+                    <button>Low</button>
+                    <button>Medium</button>
+                    <button>High</button>
+                  </div>
+                  <button class="addToDo">Add Task</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav">
+        <div class="addTask">+Add task</div>
+        <div>Home</div>
+        <div>Today</div>
+        <div>Upcoming</div>
+        <div>Important</div>
+        <div>
+          <div>My Projects</div>
+          <div class="myProjects">
+            <div>Study</div>
+            <div>Coding</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="todos"></div>
+    </div>
+
     <script src="bundle.js"></script>
   </body>
 </html>

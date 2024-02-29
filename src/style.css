@@ -1,0 +1,145 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Roboto, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background-color: #0f172a;
+}
+
+.logo {
+  font-size: 24px;
+  color: #f9faf8;
+  margin: 20px 0 20px 20px;
+}
+
+.container {
+  display: flex;
+  height: 100%;
+  flex: auto;
+}
+
+.nav {
+  background-color: #cbd5e1;
+  flex: 1;
+  border-right: 1px solid #334155;
+}
+
+.myProjects {
+  margin-left: 20px;
+}
+
+.todos {
+  background-color: #f8fafc;
+  flex: 3;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  align-items: center;
+  justify-content: center;
+}
+
+.modalContent {
+  background-color: #fefefe;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 70%;
+  height: 70%;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0f172a;
+  border-radius: 10px 10px 0 0;
+  padding: 10px 10px;
+  color: white;
+}
+
+.modalBody {
+  display: flex;
+  height: 100%;
+}
+
+.modalSideBar {
+  flex-grow: 1;
+  height: 100%;
+  border-right: 1px solid black;
+}
+
+.modalInput {
+  flex-grow: 3;
+  height: 100%;
+  padding: 10px;
+}
+
+.modalInput > form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.modalInput > form > input[type="text"],
+.modalInput > form > textarea {
+  width: 100%;
+  margin-bottom: 10px;
+  border: 0;
+  padding: 0;
+  outline: 0;
+}
+
+.modalInput > form > input[type="text"] {
+    flex: 1;
+}
+
+.modalInput > form > textarea {
+    flex: 3 1 auto;
+    height: 200px;
+    margin-bottom: auto;
+    resize: none;
+}
+
+.dueDate {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.priority {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.priority > button {
+    margin-left: auto;
+}
+
+.todo {
+  display: flex;
+  justify-content: space-between;
+}
