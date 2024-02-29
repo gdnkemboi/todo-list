@@ -11,7 +11,24 @@ class Todo {
   }
 }
 
-const tasks = [];
+let task1 = new Todo(
+  "Task 1",
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "2022-12-31",
+  "high"
+);
+
+task1.project = "Work";
+
+let task2 = new Todo(
+  "Task 2",
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "2022-12-31",
+  "high"
+);
+
+task2.project = "Home";
+const tasks = [task1, task2];
 
 class Project {
   constructor(title) {
@@ -19,7 +36,9 @@ class Project {
   }
 }
 
-const projects = [];
+const work = new Project("Work");
+const home = new Project("Home");
+const projects = [work, home];
 
 function addTask() {
   const title = document.querySelector(".title").value;
@@ -27,35 +46,36 @@ function addTask() {
   const dueDate = document.querySelector(".due").value;
   const priority = document.querySelector(".priority > div > input").value;
   const task = new Todo(title, description, dueDate, priority);
+  const addTaskPage = document.querySelector(".task");
+  if (addTaskPage.classList.contains("projectTask")) {
+    console.log(addTaskPage.classList[2]);
+    task.project = addTaskPage.classList[2];
+  }
   tasks.push(task);
 }
 
-function createTaskDiv(tasks) {
-  const todosDiv = document.querySelector(".todos");
-  todosDiv.innerHTML = "";
-  for (let task of tasks) {
-    const taskDiv = document.createElement("div");
-    taskDiv.setAttribute("class", "todo");
+function createTaskDiv(task) {
+  const taskDiv = document.createElement("div");
+  taskDiv.setAttribute("class", "todo");
 
-    const checkbox = document.createElement("input");
-    checkbox.setAttribute("type", "checkbox");
+  const checkbox = document.createElement("input");
+  checkbox.setAttribute("type", "checkbox");
 
-    const paragraph1 = document.createElement("p");
-    paragraph1.textContent = task.title;
+  const paragraph1 = document.createElement("p");
+  paragraph1.textContent = task.title;
 
-    const button = document.createElement("button");
-    button.textContent = "Details";
+  const button = document.createElement("button");
+  button.textContent = "Details";
 
-    const paragraph2 = document.createElement("p");
-    paragraph2.textContent = task.dueDate;
+  const paragraph2 = document.createElement("p");
+  paragraph2.textContent = task.dueDate;
 
-    taskDiv.appendChild(checkbox);
-    taskDiv.appendChild(paragraph1);
-    taskDiv.appendChild(button);
-    taskDiv.appendChild(paragraph2);
+  taskDiv.appendChild(checkbox);
+  taskDiv.appendChild(paragraph1);
+  taskDiv.appendChild(button);
+  taskDiv.appendChild(paragraph2);
 
-    todosDiv.appendChild(taskDiv);
-  }
+  return taskDiv;
 }
 
 function addProject() {
@@ -70,6 +90,7 @@ function createProjectDiv(projects) {
   myProjects.innerHTML = "";
   for (let project of projects) {
     const projectDiv = document.createElement("div");
+    projectDiv.setAttribute("class", "project");
     projectDiv.textContent = project.title;
     myProjects.appendChild(projectDiv);
   }
@@ -166,14 +187,56 @@ function setPriority() {
 
 setPriority();
 
+function viewProject(name) {
+  const todos = document.querySelector(".todos");
+  todos.innerHTML = "";
+  const projectTitle = document.createElement("h1");
+  projectTitle.textContent = name;
+  const addTaskToProject = document.createElement("div");
+  addTaskToProject.setAttribute("class", "addTaskToProject");
+  addTaskToProject.textContent = "+Add Task";
+  todos.appendChild(projectTitle);
+  todos.appendChild(addTaskToProject);
+  for (let task of tasks) {
+    if (task.project === name) {
+      let taskDiv = createTaskDiv(task);
+      todos.appendChild(taskDiv);
+    }
+  }
+}
+
+function addTaskToProject() {
+  const modal = document.querySelector(".modal");
+  const projectName = document.querySelector(".todos > h1").textContent;
+  const addTaskPage = document.querySelector(".task");
+  addTaskPage.classList.add("projectTask");
+  addTaskPage.classList.add(projectName);
+  const addProjectPage = document.querySelector(".addProjectPage");
+  addProjectPage.style.display = "none";
+  modal.style.display = "flex";
+}
+
 const main = (() => {
+  const todosDiv = document.querySelector(".todos");
+  createProjectDiv(projects);
+  for (let task of tasks) {
+    todosDiv.appendChild(createTaskDiv(task));
+  }
+
   const modal = document.querySelector(".modal");
   const addTaskBtn = document.querySelector(".addTask");
   addTaskBtn.addEventListener("click", () => {
     modal.style.display = "flex";
   });
 
-  const projectBtn = document.querySelector(".project");
+  const closeModalBtn = document.querySelector(".closeModal");
+  closeModalBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+    const addProjectPage = document.querySelector(".addProjectPage");
+    addProjectPage.style.display = "block";
+  });
+
+  const projectBtn = document.querySelector(".addProjectPage");
   projectBtn.addEventListener("click", () => {
     projectInput();
     const addProjectBtn = document.querySelector(".addProject");
@@ -197,7 +260,27 @@ const main = (() => {
   addToDoBtn.addEventListener("click", (event) => {
     event.preventDefault();
     addTask();
-    createTaskDiv(tasks);
+    for (let task of tasks) {
+      createTaskDiv(task);
+    }
+
+    if (todosDiv.querySelector("h1") !== null) {
+      viewProject(todosDiv.querySelector("h1").textContent);
+    }
+    console.log(tasks);
     modal.style.display = "none";
+  });
+
+  document.body.addEventListener("click", function (event) {
+    if (event.target.classList.contains("project")) {
+      console.log(event.target.textContent);
+      viewProject(event.target.textContent);
+    }
+  });
+
+  document.body.addEventListener("click", function (event) {
+    if (event.target.classList.contains("addTaskToProject")) {
+      addTaskToProject();
+    }
   });
 })();
