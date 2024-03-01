@@ -305,6 +305,7 @@ const main = (() => {
       event.preventDefault();
       addProject();
       createProjectDiv(projects);
+      taskInput()
       modal.style.display = "none";
     });
   });
