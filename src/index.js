@@ -7,7 +7,7 @@ class Todo {
     this.dueDate = dueDate;
     this.priority = priority;
     this.done = false;
-    this.project = null;
+    this.project = "General";
   }
 }
 
@@ -65,9 +65,11 @@ function createTaskDiv(task) {
 
   const paragraph1 = document.createElement("p");
   paragraph1.textContent = task.title;
+  paragraph1.setAttribute("class", "taskName");
 
   const button = document.createElement("button");
   button.textContent = "Details";
+  button.setAttribute("class", "taskDetailsBtn");
 
   const paragraph2 = document.createElement("p");
   paragraph2.textContent = task.dueDate;
@@ -342,4 +344,43 @@ const main = (() => {
       addTaskToProject();
     }
   });
+
+  function showDetailsModal(name) {
+    const detailsModal = document.querySelector(".detailsModal");
+    const detailsModalHeader = document.querySelector(".detailsModalHeader")
+    detailsModalHeader.removeChild(detailsModalHeader.firstChild);
+    const detailsModalClose = document.querySelector(".closeDetailsModal");
+    const detailsModalBody = document.querySelector(".detailsModalBody");
+    detailsModalBody.innerHTML = "";
+    const taskName = document.createElement("h3");
+    const project = document.createElement("div");
+    const priority = document.createElement("div");
+    const dueDate = document.createElement("div");
+    const description = document.createElement("div");
+    for (let task of tasks) {
+      if (task.title === name) {
+        taskName.textContent = task.title;
+        project.textContent = "Project: " + task.project;
+        priority.textContent = "Priority: " + task.priority;
+        dueDate.textContent = "Due Date: " + task.dueDate;
+        description.textContent = "Description: " + task.description;
+        detailsModalHeader.insertBefore(taskName, detailsModalClose);
+        detailsModalBody.appendChild(project);
+        detailsModalBody.appendChild(priority);
+        detailsModalBody.appendChild(dueDate);
+        detailsModalBody.appendChild(description);
+        detailsModal.style.display = "flex";
+        return;
+      }
+    }
+  }
+
+  document.addEventListener("click", function (event) {
+    const detailsModal = document.querySelector(".detailsModal");
+    if (event.target.classList.contains("taskDetailsBtn")) {
+      showDetailsModal(event.target.parentElement.querySelector(".taskName").textContent);
+    } else if (event.target.classList.contains("closeDetailsModal")) {
+      detailsModal.style.display = "none";  
+    }
+  })
 })();
