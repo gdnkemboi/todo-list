@@ -15,7 +15,7 @@ let task1 = new Todo(
   "Task 1",
   "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   "2022-12-31",
-  "high"
+  "High"
 );
 
 task1.project = "Work";
@@ -23,12 +23,14 @@ task1.project = "Work";
 let task2 = new Todo(
   "Task 2",
   "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  "2022-12-31",
-  "high"
+  "2024-03-04",
+  "High"
 );
 
 task2.project = "Home";
-const tasks = [task1, task2];
+
+let task3 = new Todo("Task 3", "assignments", "2024-03-01", "Medium");
+const tasks = [task1, task2, task3];
 
 class Project {
   constructor(title) {
@@ -222,6 +224,63 @@ const main = (() => {
   for (let task of tasks) {
     todosDiv.appendChild(createTaskDiv(task));
   }
+
+  document.addEventListener("click", (event) => {
+    const today = new Date();
+    if (event.target.classList.contains("home")) {
+      todosDiv.innerHTML = "";
+      for (let task of tasks) {
+        todosDiv.appendChild(createTaskDiv(task));
+      }
+    } else if (event.target.classList.contains("today")) {
+      todosDiv.innerHTML = "";
+      for (let task of tasks) {
+        let dueDate = new Date(task.dueDate);
+        if (
+          dueDate.getFullYear() === today.getFullYear() &&
+          dueDate.getMonth() === today.getMonth() &&
+          dueDate.getDate() === today.getDate()
+        ) {
+          todosDiv.appendChild(createTaskDiv(task));
+        }
+      }
+    } else if (event.target.classList.contains("upcoming")) {
+      todosDiv.innerHTML = "";
+      for (let task of tasks) {
+        let dueDate = new Date(task.dueDate);
+        let oneWeek = new Date();
+        oneWeek.setDate(today.getDate() + 7);
+        if (oneWeek.getFullYear() > today.getFullYear()) {
+          oneWeek.setFullYear(today.getFullYear());
+        }
+
+        if (
+          dueDate.getFullYear() === today.getFullYear() &&
+          dueDate.getMonth() === today.getMonth() &&
+          dueDate.getDate() > today.getDate() &&
+          dueDate <= oneWeek
+        ) {
+          todosDiv.appendChild(createTaskDiv(task));
+        } else if (
+          dueDate.getFullYear() > today.getFullYear() &&
+          oneWeek.getFullYear() === today.getFullYear() &&
+          dueDate.getMonth() === 0 &&
+          today.getMonth() === 11 &&
+          dueDate.getDate() > today.getDate()
+        ) {
+          todosDiv.appendChild(createTaskDiv(task));
+        }
+      }
+    } else if (event.target.classList.contains("important")) {
+      todosDiv.innerHTML = "";
+      for (let task of tasks) {
+        console.log(task.priority);
+        if (task.priority === "High") {
+          todosDiv.appendChild(createTaskDiv(task));
+        }
+      }
+    }
+  });
 
   const modal = document.querySelector(".modal");
   const addTaskBtn = document.querySelector(".addTask");
