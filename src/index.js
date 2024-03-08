@@ -62,6 +62,7 @@ function createTaskDiv(task) {
 
   const checkbox = document.createElement("input");
   checkbox.setAttribute("type", "checkbox");
+  checkbox.classList.add("checkbox");
 
   const paragraph1 = document.createElement("p");
   paragraph1.textContent = task.title;
@@ -74,10 +75,23 @@ function createTaskDiv(task) {
   const paragraph2 = document.createElement("p");
   paragraph2.textContent = task.dueDate;
 
+  const editBtn = document.createElement("button");
+  editBtn.textContent = "Edit";
+
+  const delBtn = document.createElement("button");
+  delBtn.textContent = "Delete";
+
+  if (task.done) {
+    checkbox.setAttribute("checked", true);
+    paragraph1.style.textDecoration = "line-through";
+    taskDiv.style.opacity = 0.5
+  }
   taskDiv.appendChild(checkbox);
   taskDiv.appendChild(paragraph1);
   taskDiv.appendChild(button);
   taskDiv.appendChild(paragraph2);
+  taskDiv.appendChild(editBtn);
+  taskDiv.appendChild(delBtn);
 
   return taskDiv;
 }
@@ -305,7 +319,7 @@ const main = (() => {
       event.preventDefault();
       addProject();
       createProjectDiv(projects);
-      taskInput()
+      taskInput();
       modal.style.display = "none";
     });
   });
@@ -348,7 +362,7 @@ const main = (() => {
 
   function showDetailsModal(name) {
     const detailsModal = document.querySelector(".detailsModal");
-    const detailsModalHeader = document.querySelector(".detailsModalHeader")
+    const detailsModalHeader = document.querySelector(".detailsModalHeader");
     detailsModalHeader.removeChild(detailsModalHeader.firstChild);
     const detailsModalClose = document.querySelector(".closeDetailsModal");
     const detailsModalBody = document.querySelector(".detailsModalBody");
@@ -379,9 +393,34 @@ const main = (() => {
   document.addEventListener("click", function (event) {
     const detailsModal = document.querySelector(".detailsModal");
     if (event.target.classList.contains("taskDetailsBtn")) {
-      showDetailsModal(event.target.parentElement.querySelector(".taskName").textContent);
+      showDetailsModal(
+        event.target.parentElement.querySelector(".taskName").textContent
+      );
     } else if (event.target.classList.contains("closeDetailsModal")) {
-      detailsModal.style.display = "none";  
+      detailsModal.style.display = "none";
     }
-  })
+  });
+
+  document.addEventListener("click", (event) => {
+    if (event.target.classList.contains("checkbox")) {
+      let taskName = event.target.parentElement.querySelector(".taskName");
+      if (event.target.checked) {
+        taskName.style.textDecoration = "line-through";
+        event.target.parentElement.style.opacity = "0.5";
+        for (let task of tasks) {
+          if (taskName.textContent === task.title) {
+            task.done = true;
+          }
+        }
+      } else {
+        taskName.style.textDecoration = "none";
+        event.target.parentElement.style.opacity = "1";
+        for (let task of tasks) {
+          if (taskName.textContent === task.title) {
+            task.done = false;
+          }
+        }
+      }
+    }
+  });
 })();
