@@ -79,12 +79,13 @@ function createTaskDiv(task) {
   editBtn.textContent = "Edit";
 
   const delBtn = document.createElement("button");
+  delBtn.setAttribute("class", "deleteTask");
   delBtn.textContent = "Delete";
 
   if (task.done) {
     checkbox.setAttribute("checked", true);
     paragraph1.style.textDecoration = "line-through";
-    taskDiv.style.opacity = 0.5
+    taskDiv.style.opacity = 0.5;
   }
   taskDiv.appendChild(checkbox);
   taskDiv.appendChild(paragraph1);
@@ -419,6 +420,19 @@ const main = (() => {
           if (taskName.textContent === task.title) {
             task.done = false;
           }
+        }
+      }
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    if (event.target.classList.contains("deleteTask")) {
+      let taskName = event.target.parentElement.querySelector(".taskName");
+      for (let i = 0; i < tasks.length; i++) {
+        if (tasks[i].title === taskName.textContent) {
+          tasks.splice(i, 1);
+          todosDiv.removeChild(event.target.parentElement)
+          break;
         }
       }
     }
