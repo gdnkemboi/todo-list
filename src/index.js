@@ -56,6 +56,24 @@ function addTask() {
   tasks.push(task);
 }
 
+function editTask(name) {
+  console.log(name);
+  const title = document.querySelector(".editTitle").value;
+  console.log(title);
+  const description = document.querySelector(".editDescription").value;
+  const dueDate = document.querySelector(".editDue").value;
+  const priority = document.querySelector(".priorityInput").value;
+  for (let task of tasks) {
+    if (task.title === name) {
+      task.title = title;
+      task.description = description;
+      task.dueDate = dueDate;
+      task.priority = priority;
+      break;
+    }
+  }
+}
+
 function createTaskDiv(task) {
   const taskDiv = document.createElement("div");
   taskDiv.setAttribute("class", "todo");
@@ -77,6 +95,7 @@ function createTaskDiv(task) {
 
   const editBtn = document.createElement("button");
   editBtn.textContent = "Edit";
+  editBtn.setAttribute("class", "editTaskBtn");
 
   const delBtn = document.createElement("button");
   delBtn.setAttribute("class", "deleteTask");
@@ -361,6 +380,29 @@ const main = (() => {
     }
   });
 
+  document.addEventListener("click", (event) => {
+    if (event.target.classList.contains("checkbox")) {
+      let taskName = event.target.parentElement.querySelector(".taskName");
+      if (event.target.checked) {
+        taskName.style.textDecoration = "line-through";
+        event.target.parentElement.style.opacity = "0.5";
+        for (let task of tasks) {
+          if (taskName.textContent === task.title) {
+            task.done = true;
+          }
+        }
+      } else {
+        taskName.style.textDecoration = "none";
+        event.target.parentElement.style.opacity = "1";
+        for (let task of tasks) {
+          if (taskName.textContent === task.title) {
+            task.done = false;
+          }
+        }
+      }
+    }
+  });
+
   function showDetailsModal(name) {
     const detailsModal = document.querySelector(".detailsModal");
     const detailsModalHeader = document.querySelector(".detailsModalHeader");
@@ -402,25 +444,124 @@ const main = (() => {
     }
   });
 
+  function showEditModal(name) {
+    const editModal = document.querySelector(".editModal");
+    const editModalHeader = document.querySelector(".editModalHeader")
+    const editModalClose = document.querySelector(".closeEditModal");
+    const editModalBody = document.querySelector(".editModalBody");
+    editModalBody.innerHTML = "";
+
+    const editForm = document.createElement("form");
+    editForm.setAttribute("class", "editForm");
+
+    const ogName = document.createElement("input");
+    ogName.setAttribute("type", "hidden");
+    ogName.setAttribute("class", "ogName");
+    ogName.value = name;
+    editForm.appendChild(ogName);
+
+    const titleInput = document.createElement("input");
+    titleInput.setAttribute("type", "text");
+    titleInput.setAttribute("placeholder", "Title");
+    titleInput.setAttribute("class", "editTitle");
+
+    const descriptionTextarea = document.createElement("textarea");
+    descriptionTextarea.setAttribute("placeholder", "Description");
+    descriptionTextarea.setAttribute("class", "editDescription");
+
+    const dueDateDiv = document.createElement("div");
+    dueDateDiv.setAttribute("class", "dueDate");
+
+    const dueDateInput = document.createElement("input");
+    dueDateInput.setAttribute("type", "date");
+    dueDateInput.setAttribute("placeholder", "DD/MM/YYYY");
+    dueDateInput.setAttribute("class", "editDue");
+    dueDateDiv.appendChild(dueDateInput);
+
+    dueDateDiv.appendChild(dueDateInput);
+
+    const priority = document.createElement("div");
+    priority.setAttribute("class", "priority");
+
+    const priorityPara = document.createElement("p");
+    priorityPara.textContent = "Priority:";
+    priority.appendChild(priorityPara);
+
+    const priorityBtnsDiv = document.createElement("div");
+
+    const priorityBtnInput = document.createElement("input");
+    priorityBtnInput.setAttribute("type", "hidden");
+    priorityBtnInput.setAttribute("class", "priorityInput");
+
+    const lowPriorityBtn = document.createElement("button");
+    lowPriorityBtn.setAttribute("class", "priorityBtn");
+    lowPriorityBtn.textContent = "Low";
+
+    const mediumPriorityBtn = document.createElement("button");
+    mediumPriorityBtn.setAttribute("class", "priorityBtn");
+    mediumPriorityBtn.textContent = "Medium";
+
+    const highPriorityBtn = document.createElement("button");
+    highPriorityBtn.setAttribute("class", "priorityBtn");
+    highPriorityBtn.textContent = "High";
+
+    priorityBtnsDiv.appendChild(priorityBtnInput);
+    priorityBtnsDiv.appendChild(lowPriorityBtn);
+    priorityBtnsDiv.appendChild(mediumPriorityBtn);
+    priorityBtnsDiv.appendChild(highPriorityBtn);
+
+    const editBtn = document.createElement("button");
+    editBtn.setAttribute("class", "confirmEdit");
+    editBtn.textContent = "Confirm Edit";
+
+    priority.appendChild(priorityBtnsDiv);
+    priority.appendChild(editBtn)
+
+    for (let task of tasks) {
+      if (task.title === name) {
+        titleInput.value = task.title;
+        descriptionTextarea.value = task.description;
+        dueDateInput.value = task.dueDate;
+        priorityBtnInput.value = task.priority;
+        editForm.appendChild(titleInput);
+        editForm.appendChild(descriptionTextarea);
+        editForm.appendChild(dueDateDiv);
+        editForm.appendChild(priority);
+        editModalBody.appendChild(editForm);
+        editModal.style.display = "flex";
+        return;
+      }
+    }
+  }
+
   document.addEventListener("click", (event) => {
-    if (event.target.classList.contains("checkbox")) {
-      let taskName = event.target.parentElement.querySelector(".taskName");
-      if (event.target.checked) {
-        taskName.style.textDecoration = "line-through";
-        event.target.parentElement.style.opacity = "0.5";
-        for (let task of tasks) {
-          if (taskName.textContent === task.title) {
-            task.done = true;
-          }
-        }
-      } else {
-        taskName.style.textDecoration = "none";
-        event.target.parentElement.style.opacity = "1";
-        for (let task of tasks) {
-          if (taskName.textContent === task.title) {
-            task.done = false;
-          }
-        }
+    if (event.target.classList.contains("priorityBtn")) {
+      event.preventDefault();
+      const priorityInput = document.querySelector(".priorityInput");
+      priorityInput.value = event.target.textContent;
+    }
+  });
+
+  document.addEventListener("click", function (event) {
+    const editModal = document.querySelector(".editModal");
+    if (event.target.classList.contains("editTaskBtn")) {
+      showEditModal(
+        event.target.parentElement.querySelector(".taskName").textContent
+      );
+    } else if (event.target.classList.contains("closeEditModal")) {
+      editModal.style.display = "none";
+    } else if (event.target.classList.contains("confirmEdit")) {
+      event.preventDefault();
+      const name = document.querySelector(".ogName").value;
+      editTask(name);
+      editModal.style.display = "none";
+      todosDiv.innerHTML = "";
+      for (let task of tasks) {
+        todosDiv.appendChild(createTaskDiv(task));
+      }
+
+      if (todosDiv.querySelector("h1") !== null) {
+        viewProject(todosDiv.querySelector("h1").textContent);
       }
     }
   });
@@ -431,7 +572,7 @@ const main = (() => {
       for (let i = 0; i < tasks.length; i++) {
         if (tasks[i].title === taskName.textContent) {
           tasks.splice(i, 1);
-          todosDiv.removeChild(event.target.parentElement)
+          todosDiv.removeChild(event.target.parentElement);
           break;
         }
       }
