@@ -52,6 +52,8 @@ function addTask() {
   if (addTaskPage.classList.contains("projectTask")) {
     console.log(addTaskPage.classList[2]);
     task.project = addTaskPage.classList[2];
+    addTaskPage.classList.remove(addTaskPage.classList[1])
+    addTaskPage.classList.remove(addTaskPage.classList[2])
   }
   tasks.push(task);
 }
@@ -356,8 +358,9 @@ const main = (() => {
   addToDoBtn.addEventListener("click", (event) => {
     event.preventDefault();
     addTask();
+    todosDiv.innerHTML = "";
     for (let task of tasks) {
-      createTaskDiv(task);
+      todosDiv.appendChild(createTaskDiv(task));
     }
 
     if (todosDiv.querySelector("h1") !== null) {
